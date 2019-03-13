@@ -127,7 +127,7 @@ You can toggle read-only mode with M-x read-only-mode or C-x C-q."
 (defcustom org-wiki-clip-jar-path "~/bin/Clip.jar"
   "Path to Clip.jar utility to paste images from clipboard."
   :type 'file
-  :group 'org-wiki 
+  :group 'org-wiki
   )
 
 
@@ -179,16 +179,16 @@ You can toggle read-only mode with M-x read-only-mode or C-x C-q."
 
 (defun org-wiki--get-buffers ()
   "Return all org-wiki page buffers (.org) files in `org-wiki-location`."
- (org-wiki--start-location) 
+ (org-wiki--start-location)
  (cl-remove-if-not (lambda (p)
                  (let* ((fp (buffer-file-name p))
                         (fpath (if fp (expand-file-name fp) nil))
                         )
                          ;; path test if file exists (if fpath not nil)
                    (and  fpath
-                         ;; test if buffer file is in wiki location 
+                         ;; test if buffer file is in wiki location
                          (string-prefix-p (expand-file-name org-wiki-location) fpath)
-                         ;; test if buffer file has extension .org 
+                         ;; test if buffer file has extension .org
                          (string-suffix-p ".org" fpath)
                     )))
                (buffer-list)))
@@ -385,12 +385,12 @@ Will open the the wiki file Linux.org in
 
       ;; Action executed if file exists.
       (if org-wiki-default-read-only
-          ;; open file in read-only mode. 
+          ;; open file in read-only mode.
           (progn  (find-file  org-wiki-file)
                   (read-only-mode 1))
-          ;; open file in writable mode. 
+          ;; open file in writable mode.
           (find-file  org-wiki-file))
-        ))) 
+        )))
 
 
 (defun org-wiki--assets-get-file (pagename filename)
@@ -837,7 +837,7 @@ to cancel the download."
           (with-current-buffer b
             (when (and (org-wiki--is-buffer-in b)
                        (equal major-mode 'image-mode))
-              (kill-this-buffer))))        
+              (kill-this-buffer))))
         (buffer-list))
   (message "All wiki images closed. Ok."))
 
@@ -917,13 +917,13 @@ to cancel the download."
 (defun org-wiki-export-with (org-exporter)
   "Export all pages to a given format. See full doc.
 ORG-EXPORTER is a function that exports an org-mode page to a specific format like html.
-It can be for instance: 
+It can be for instance:
 
-- org-html-publish-to-thml 
+- org-html-publish-to-thml
 - org-latex-publish-to-pdf
 - org-latex-publish-to-latex
 
-WARN: This is a synchronous function and can freeze Emacs. Emacs will freeze while 
+WARN: This is a synchronous function and can freeze Emacs. Emacs will freeze while
 the exporting doesn't finish. Type C-g to abort the execution."
   (interactive)
   (let ((org-html-htmlize-output-type 'css)
@@ -1014,7 +1014,7 @@ Note: This function doesn't freeze Emacs since it starts another Emacs process."
 
 
 ;;
-;; Despite this function was implemented as a interface to 
+;; Despite this function was implemented as a interface to
 ;; Python3 simple http server, it can be refactored to work
 ;; with another more powerful http server such as Nginx.
 ;;
@@ -1023,7 +1023,7 @@ Note: This function doesn't freeze Emacs since it starts another Emacs process."
 Note: This command requires Python3 installed."
   (interactive)
   (let (
-        ;; Process name 
+        ;; Process name
         (pname  "org-wiki-server")
         ;; Buffer name - Display process output (stdout)
         (bname   "*org-wiki-server*")
@@ -1034,7 +1034,7 @@ Note: This command requires Python3 installed."
           (sit-for 0.1)
           (switch-to-buffer bname)
           (save-excursion ;; Save cursor position
-           (insert "Server started ...\n\n")                               
+           (insert "Server started ...\n\n")
            (message "\nServer started ...\n")
 
            ;; Show machine network cards' IP addresses.
@@ -1046,7 +1046,7 @@ Note: This command requires Python3 installed."
                                         ;; Mac OSX - (Not tested )
              (darwin          (insert (shell-command-to-string "ifconfig")))
                                         ;; Windows 7, 8, 10 - Kernel NT
-             (windows-nt      (insert (shell-command-to-string "ipconfig")))))          
+             (windows-nt      (insert (shell-command-to-string "ipconfig")))))
           (start-process pname
                          bname
                          "python3"
@@ -1054,15 +1054,15 @@ Note: This command requires Python3 installed."
                          "http.server"
                          "--bind"
                          org-wiki-server-host
-                         org-wiki-server-port)                                                               
+                         org-wiki-server-port)
           (when (y-or-n-p "Open server in browser ?")
-            (browse-url (format "http://localhost:%s" org-wiki-server-port))))      
+            (browse-url (format "http://localhost:%s" org-wiki-server-port))))
         (progn  (switch-to-buffer bname)
                 (kill-process (get-process pname))
                 (message "Server stopped.")
                 ))))
 
-(defun org-wiki-paste-image ()  
+(defun org-wiki-paste-image ()
   "Paste a image asking the user for the file name."
   (interactive)
   (let* ((dir   (file-name-as-directory
@@ -1096,7 +1096,7 @@ Note: This command requires Python3 installed."
   (interactive)
   (let* ((dir   (file-name-base
                     (buffer-file-name))))
-    
+
     (org-wiki--assets-make-dir dir)
 
     (insert "#+CAPTION: ")
@@ -1125,7 +1125,7 @@ Note: This command requires Python3 installed."
   ;; The initial value - Set to 1 to enable by default
   nil
   ;; The indicator for the mode line.
-  nil 
+  nil
   ;; The minor mode keymap
   `(
     ;; Commands to Open Index page:
@@ -1139,7 +1139,7 @@ Note: This command requires Python3 installed."
     (,(kbd "hr")        .  org-wiki-helm-read-only)
     (,(kbd "hf")        .  org-wiki-helm-frame)
     (,(kbd "kk")        .  org-wiki-close)
-    
+
     ;; ==== Commands to browse directories =====
     (,(kbd "dw")        .  org-wiki-dired )
     (,(kbd "do")        .  org-wiki-open)
@@ -1162,10 +1162,10 @@ Note: This command requires Python3 installed."
 
     (,(kbd "ttb")        . (lambda () (interactive) (tool-bar-mode 'toggle)))
     (,(kbd "ttm")        . (lambda () (interactive) (menu-bar-mode 'toggle)))
-    
+
     (,(kbd "q")         . (lambda () (interactive) (kill-buffer)))
     )
-   ;; Make mode local to buffer rather than global 
+   ;; Make mode local to buffer rather than global
    ;; :global t
 )
 
@@ -1192,14 +1192,14 @@ Note: This command requires Python3 installed."
   (find-dired org-wiki-location
               (mapconcat #'identity
                          '(
-                           "-not -path '*/.git*'"         ;; Exclude .git Directory 
+                           "-not -path '*/.git*'"         ;; Exclude .git Directory
                            "-and -not -name '.#*'"        ;; Exclude temporary files starting with #
                            "-and -not -name '#*'"
                            "-and -not -name '*#'"
                            "-and -not -name '*~' "        ;; Exclude ending with ~ (tilde)
-                           "-and -not -name '*.html' "    ;; Exclude html files 
+                           "-and -not -name '*.html' "    ;; Exclude html files
                            )
-                         
+
                          " "
                          )))
 
@@ -1427,7 +1427,7 @@ Toggle
 ;; ========= org-wiki Internal databases  =========== ;;
 
 ;; Variable containing useful math, physics, currencies and greek letters used by function
-;; org-wiki-insert-symbol 
+;; org-wiki-insert-symbol
 (defvar org-wiki-symbol-list
      '(
        ("alpha" .  "α")
@@ -1436,7 +1436,7 @@ Toggle
        ("Gamma" ."Γ")
        ("delta" . "δ")
        ("Delta" . "Δ")
-       ("episilon" ."ε") 
+       ("episilon" ."ε")
        ("zeta" ."ζ")
        ("eta" ."η")
        ("theta" ."θ")
@@ -1457,17 +1457,17 @@ Toggle
        ("Phi" ."Φ")
        ("psi" ."Ψ")
        ("omega" ."ω")
-       ("Omega" ."Ω")       
+       ("Omega" ."Ω")
 
        ("Multiplication sign" . "×")
        ("Multiplication dot (sdot)" . "⋅")
        ("Division sign" . "÷")
-       
+
       ;;; Mathematical Symbols for calculus
        ("Square root sqrt" . "√")
        ("Cubic root cbrt" . "∛")
-       ("Fourth root" . "∜")       
-        
+       ("Fourth root" . "∜")
+
        ("Infinity" . "∞")
        ("summation" . "Σ")
        ("product - big PI" . "Π")
@@ -1481,11 +1481,11 @@ Toggle
        ("tensor-prod" . "⊗")
        ("Direct sum or Exclusive or" . "⊕")
        ("Gradient, nabla" ."∇")
-       
+
        ("Laplace transform" . "ℒ")
        ("Fourier transform" . "ℱ")
-       
-       ;; Symbols for set algebra 
+
+       ;; Symbols for set algebra
        ("Empty set" . "∅")
        ("Set membership" . "∈")
        ("Universal quantifier" . "∀")
@@ -1495,10 +1495,10 @@ Toggle
        ("Logic - Logical NOT" . "¬")
        ("Logic - Logical AND" . "∧")
        ("Logic - Logical OR" . "∨")
-       
-       
-       ("Real numbers" . "ℝ")  
-       
+
+
+       ("Real numbers" . "ℝ")
+
        ;; Misc Symbols
        ("Per mile" . "‰")
        ("Per basis points" . "‱")
@@ -1524,14 +1524,14 @@ Toggle
        ("Geometry - Spherical angle" . "∢")
        ("Geometry - Perpendicular to" . "⟂")
        ("Geometry - right angle" . "∟")
-       
+
       ;; Health and safety
        ("WARN Skull and crossbones" . "☠")
        ("WARN Radioactive" . "☢")
        ("WARN Biohazard" . "☣")
        ("WARN Warning sign" . "⚠")
        ("WARN High voltage" . "⚡")
-       
+
       ;; Fractions
        ("Fraction one-quarter" . "¼")
        ("Fraction one-half" . "½")
@@ -1548,10 +1548,10 @@ Toggle
        ("Currency Euro" . "€")
        ("Currency Yen, Yuan, Reminbi (China)" . "¥")
        ("Currency Won" . "₩")
-       ("Currency Russian Ruble" . "₽")       
+       ("Currency Russian Ruble" . "₽")
        ("Currency Lira" . "₤")
        ("Currency Bitcoin" . "₿")
-       ("Currency Indian Rupee" . "₹")             
+       ("Currency Indian Rupee" . "₹")
        ))
 
 (defvar org-wiki-template-blocks
@@ -1570,10 +1570,10 @@ Toggle
         ("R code block"       . "#+BEGIN_SRC R \n\n#+END_SRC")
         ("Elisp code block"   . "#+BEGIN_SRC elisp \n\n#+END_SRC")
         ("C++ code block"     . "#+BEGIN_SRC cpp \n\n#+END_SRC")
-        ("Scala code block"     . "#+BEGIN_SRC scala \n\n#+END_SRC")       
+        ("Scala code block"     . "#+BEGIN_SRC scala \n\n#+END_SRC")
         ))
 
-;; Latex templates used by user command M-x org-wiki-insert-latex 
+;; Latex templates used by user command M-x org-wiki-insert-latex
 (defvar org-wiki-latex-templates
   '(
   ("Latex equation block " . "\\begin{equation}\n\n\\end{equation}")
@@ -1581,7 +1581,7 @@ Toggle
   ("Basic Summation - Σ from a to b"    . "\\sum_{a}^{b}")
   ("Basic Product - Π from a to b" . "\\prod_{a}^{b}")
   ("Basic Binomial coefficient (n k) = n! / ((n -k)! x k!) " . "{n \\choose k}")
-  
+
   ("Calculus Limit lim(x -> ∞) f(x)" . "\\lim_{x \\to \\infty} f(x)")
   ("Calculus Integral  - ∫ from a to b"  . "\\int_{a}^{b}")
   ("Calculus Infinity  - ∞" . "\\infty")
@@ -1590,7 +1590,7 @@ Toggle
   ("Calculus Second Derivate of f d^2f/dx^2" . "\\frac{d^2f}{dx^2}" )
   ("Calculus Derivate operation d/dx p(x)" . "\\frac{d}{dx} p(x)" )
   ("Calculus Second Derivate operation d^2/dx^2 p(x)" . "\\frac{d^2}{dx^2} p(x)" )
-  ("Calculus Partial derivate - ∂" . "\\partial")       
+  ("Calculus Partial derivate - ∂" . "\\partial")
   ("Calculus Partial derivate fraction ∂x/∂t" . "\\frac{\\partial x}{\\partial y}")
   ("Calculus Second Partial derivate fraction ∂2x/∂t2" . "\\frac{\\partial^2 x}{\\partial y^2}")
 
@@ -1601,14 +1601,14 @@ Toggle
   ("Operator - times x"                     . "\\times")
   ("Operator - div %"                       . "\\div")
   ("Operator - Approximately ~="            . "\\prox")
-  ("Operator - Proportional to ∝"           . "\\propto")              
-  
+  ("Operator - Proportional to ∝"           . "\\propto")
+
   ("Escape - $"              . "\\textdollar")
   ("Escape - Underline - _ " . "\\_")
   ("Escape - Ampersand - &"  . "\\&")
   ("Escape - percent - %"    . "\\%")
   ("Escape - tilde ~"        . "\\sim")
-  
+
   ("Func - limit" . "\\lim")
   ("Func - √ square root sqrt" . "\\sqrt{}")
   ("Func - n√ nth root" . "\\sqrt[n]{}")
@@ -1616,15 +1616,15 @@ Toggle
   ("Enclosing () - Big parenthesis" . "\\left( <expr> \\right)")
   ("Enclosing \/ - Underbrace" . "\\underbrace{ <expr> }")
   ("Enclosing /\ - Overbrace" . "\\overbrace{ <expr> }")
-  
+
   ("Accent - hat â, î" . "\\hat{}")
   ("Accent - grave à, ì" . "\\grave{}")
   ("Accent - bar - stroke over symbol" . "\\bar{}")
   ("Accent - tilde - ã, ĩ - tilde over symbol" . "\\tilde{}")
   ("Accent - dot (derivate) symbol" . "\\dot{}")
   ("Accent - double dot (double derivate) symbol" . "\\ddot{}")
-  ("Accent - arrow over symbol, vector" . "\\vec{}")        
-  
+  ("Accent - arrow over symbol, vector" . "\\vec{}")
+
   ;; Set notation
   ("Sets - N Set of Natural Numbers" . "\\N")
   ("Sets - Z Set of Integers" . "\\Z")
@@ -1642,7 +1642,7 @@ Toggle
   ("Greek α - lower alpha" . "\\alpha")
   ("Greek β - lower beta" . "\\beta")
   ("Greek σ - lower sigma" . "\\sigma")
-  ("Greek Σ - upper sigma" . "\\Sigma")       
+  ("Greek Σ - upper sigma" . "\\Sigma")
   ("Greek γ - lower gamma" . "\\gamma")
   ("Greek Γ - upper gamma" . "\\Gamma")
   ("Greek δ - lower delta" . "\\delta")
@@ -1654,20 +1654,20 @@ Toggle
   ("Greek ζ - zeta" . "\\zeta")
   ("Greek η - eta" . "\\eta")
   ("Greek μ - mu" . "\\mu")
-  ("Greek ρ - rho" . "\\rho")       
+  ("Greek ρ - rho" . "\\rho")
   ("Greek φ - lower phi" . "\\phi")
-  ("Greek Φ - upper phi" . "\\Phi")       
-  ("Greek ω - lower omega" . "\\omega")        
+  ("Greek Φ - upper phi" . "\\Phi")
+  ("Greek ω - lower omega" . "\\omega")
   ("Greek Ω - upper omega" . "\\Omega")
-  ("Greek Ψ - psi" . "\\psi")                       
+  ("Greek Ψ - psi" . "\\psi")
   ("Greek τ - tau" . "\\tau")
   ("Greek ι - lower iota" . "\\iota")
   ("Greek ξ - lower xi" . "\\xi")
-  ("Greek Ξ - upper xi" . "\\xi")        
+  ("Greek Ξ - upper xi" . "\\xi")
   ("Symbol -> Right arrow" . "\\rightarrow")
   ("Symbol <- Left arrow"  . "\\leftarrow")
   ("Symbol    Up arrow"    . "\\uparrow")
-  ("Symbol    Down arrow"  . "\\downarrow")  
+  ("Symbol    Down arrow"  . "\\downarrow")
   ))
 
 
