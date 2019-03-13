@@ -476,6 +476,15 @@ points to the file <org wiki location>/Blueprint/box1.dwg."
             file-path
             (or desc asset))))))
 
+;; Defines a dynamic face for org-wiki links, inheriting from
+;; `org-link' but making the text red when the linked page does
+;; not exist.
+(defun org-wiki--dynamic-face (path)
+  (let ((org-wiki-file (org-wiki--page->file path)))
+    (if (not (file-exists-p org-wiki-file))
+        '(:inherit org-link :foreground "red")
+        'org-link)))
+
 ;;; Custom Protocols
 ;; These shouldn't be defined as mode hooks, which causes them to be
 ;; executed every single time org-mode is activated, but after org
@@ -486,6 +495,7 @@ points to the file <org wiki location>/Blueprint/box1.dwg."
         (org-link-set-parameters
          "wiki"
          :face #'org-wiki--dynamic-face
+         :follow #'org-wiki--open-page
          :export #'org-wiki--org-link)
         (org-link-set-parameters
          "wiki-asset-sys"
