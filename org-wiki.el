@@ -477,21 +477,36 @@ points to the file <org wiki location>/Blueprint/box1.dwg."
             (or desc asset))))))
 
 ;;; Custom Protocols
-(add-hook 'org-mode-hook
-          (lambda ()
-            ;; Hyperlinks to other org-wiki pages
-            ;;
-            ;; wiki:<page-name> or [[wiki:<page-name>][<page-name>]]
-            (org-add-link-type  "wiki"
-                                #'org-wiki--open-page
-                                #'org-wiki--org-link )
-            ;; Hyperlinks to asset files that are opened with system
-            ;; applications such as spreadsheets.
-            ;;
-            ;; wiki-asset-sys:<
-            (org-add-link-type  "wiki-asset-sys"
-                                #'org-wiki--protocol-open-assets-with-sys
-                                #'org-wiki--asset-link)))
+;; These shouldn't be defined as mode hooks, which causes them to be
+;; executed every single time org-mode is activated, but after org
+;; is loaded - wrap them in `with-eval-after-load'
+(with-eval-after-load 'org
+  (if (fboundp 'org-link-set-parameters)
+      (progn
+        (org-link-set-parameters
+         "wiki"
+         :face #'org-wiki--dynamic-face
+         :export #'org-wiki--org-link)
+        (org-link-set-parameters
+         "wiki-asset-sys"
+         :follow #'org-wiki--protocol-open-assets-with-sys
+         :export #'org-wiki--asset-link))
+    ;; Fall back on the old `org-add-link-type'
+    (org-add-link-type
+     "wiki"
+     ;; Hyperlinks to other org-wiki pages
+     ;;
+     ;; wiki:<page-name> or [[wiki:<page-name>][<page-name>]]
+     #'org-wiki--open-page
+     #'org-wiki--org-link )
+    (org-add-link-type
+     "wiki-asset-sys"
+     ;; Hyperlinks to asset files that are opened with system
+     ;; applications such as spreadsheets.
+     ;;
+     ;; wiki-asset-sys:<
+     #'org-wiki--protocol-open-assets-with-sys
+     #'org-wiki--asset-link)))
 
 (defun org-wiki--helm-selection (callback)
   "Open a helm menu to select the wiki page and invokes the CALLBACK function."
